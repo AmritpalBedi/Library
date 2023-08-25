@@ -1,4 +1,9 @@
-const myLibrary = [];
+let myLibrary = [];
+
+function addBookToLibrary(title, author, pages, read, background) {
+    let newItem = new Book(title, author, pages, read, background);
+    myLibrary.push(newItem);
+}
 
 function Book(title, author, pages, read, background) {
     this.title = title;
@@ -9,26 +14,101 @@ function Book(title, author, pages, read, background) {
     this.info = () => (read) ? `${title} by ${author}, ${pages} pages, read` : `${title} by ${author}, ${pages} pages, not read yet`;
 }
 
-function addBookToLibrary(title, author, pages, read, background) {
-    let newItem = new Book(title, author, pages, read, background);
-    myLibrary.push(newItem);
-}
-
-addBookToLibrary("The Hobbit", "J.R.R. Tolkien", 295, true, "https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2Fwww.themoviedb.org%2Ft%2Fp%2Foriginal%2FxQYiXsheRCDBA39DOrmaw1aSpbk.jpg&sp=1692742713T854586d7eca42a8e7eb8bb5337052cea14daa62178b5d554ddfd4a169a284f1f");
-addBookToLibrary("The Fellowship of the Ring", "J.R.R. Tolkien", 448, false, "https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2Fwww.blackgate.com%2Fwp-content%2Fuploads%2F2014%2F01%2FThe-Fellowship-of-the-Ring-poster.jpg&sp=1692743710T05031d62e9b2f1f0a4990e685a0ff5fb6193171a87dc46a8178a75c4c765db9a");
-addBookToLibrary("The Two Towers", "J.R.R. Tolkien", 464, false, "https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2Fwww.themoviedb.org%2Ft%2Fp%2Foriginal%2FrrGlNlzFTrXFNGXsD7NNlxq4BPb.jpg&sp=1692743735Teda7d0acd3dcb4248f1d6962442dd6ff3f74f13b29d599564e21cbde5f53ad2c");
-addBookToLibrary("The Return of the King", "J.R.R. Tolkien", 464, false, "https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2Fwww.themoviedb.org%2Ft%2Fp%2Foriginal%2FdNsEaafO4huvqzVrlPuSQWIHOy0.jpg&sp=1692743761T3c67313a2eabd0c477e5e7b129d653bdcf8a9e8cd64616c01928976b531a61cb");
-
-const container = document.querySelector("#container");
-const newBook = document.querySelector(".new-book");
 const showCase = document.querySelector(".showcase");
+function showBooks() {
+    showCase.innerHTML = "";
+    for (let i = 0; i < myLibrary.length; i++) {
+        const book = document.createElement("div");
+        let image = myLibrary[i].background;
+        book.style.cssText = `width: 400px; height: 650px; background-size: cover; background-image: url(${image}); background-color: black;`
 
-//showCase.textContent = `${myLibrary.length}`;
+        const remove = document.createElement("button");
+        remove.style.cssText = `width: 200px; height: 50px;`
+        remove.classList.add("remove_button");
+        remove.classList.add(`${i}`);
+        remove.innerHTML = "Remove Book"
 
-for (let i = 0; i < myLibrary.length; i++) {
-    const book = document.createElement("div");
-    let image = myLibrary[i].background;
-    book.style.cssText = `width: 400px; height: 600px; background-size: cover; background-image: url(${image}); background-color: black;`
-    showCase.appendChild(book);
+        const readButton = document.createElement("button");
+        readButton.classList.add("read_button");
+        readButton.classList.add(`${i}`);
+        readButton.style.cssText = `width: 200px; height: 50px;`
+
+        if (myLibrary[i].read) {
+            readButton.innerHTML = "Read"
+        } else {
+            readButton.innerHTML = "Not Read"
+        }
+
+        book.appendChild(remove);
+        book.appendChild(readButton);
+        showCase.appendChild(book);
+
+    }
+    setRemoveButtons();
+    setReadStatus();
 }
 
+const showButton = document.querySelector(".showDialog");
+const addBook = document.querySelector("#add_book");
+const confirmBtn = document.querySelector("#submit_book");
+
+showButton.addEventListener("click", () => {
+    addBook.showModal();
+})
+
+confirmBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    let title = document.getElementById("book_title").value;
+    let author = document.getElementById("book_author").value;
+    let pages = document.getElementById("book_pages").value;
+    let read = document.getElementById("book_status").checked;
+    let background = document.getElementById("book_background").value;
+    clearForm();
+    addBook.close();
+    addBookToLibrary(title, author, pages, read, background);
+    showBooks();
+
+});
+
+function clearForm() {
+    document.getElementById("book_title").value = "";
+    document.getElementById("book_author").value = "";
+    document.getElementById("book_pages").value = "";
+    document.getElementById("book_status").checked = "";
+    document.getElementById("book_background").value = "";
+}
+
+function removeBook(bookPosition) {
+    bookPosition = +bookPosition
+    let firstHalf = myLibrary.slice(0, bookPosition);
+    let secondHalf = myLibrary.slice(bookPosition + 1);
+    let newLibrary = firstHalf.concat(secondHalf);
+
+    myLibrary = newLibrary
+    showBooks();
+}
+
+let removeButtons = document.querySelectorAll(".remove_button");
+function setRemoveButtons() {
+    removeButtons = document.querySelectorAll(".remove_button");
+    removeButtons.forEach(removeButton => removeButton.addEventListener("click", () => {
+        let className = removeButton.className.split(" ");
+        removeBook(className[1]);
+    }));
+}
+
+let readIndicators = document.querySelectorAll(".read_button");
+function setReadStatus() {
+    readIndicators = document.querySelectorAll(".read_button");
+    readIndicators.forEach(readIndicator => readIndicator.addEventListener("click", () => {
+        let status = readIndicator.innerHTML;
+        let className = readIndicator.className.split(" ");
+        let bookNumber = +className[1]
+        if (status.toLowerCase() == "not read") {
+            myLibrary[bookNumber].read = true;
+        } else {
+            myLibrary[bookNumber].read = false;
+        }
+        showBooks();
+    }));
+}
