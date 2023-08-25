@@ -2,29 +2,51 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library</title>
-    <script src="javascript.js" defer></script>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library</title>
+  <script src="javascript.js" defer></script>
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <div open id="container">
-        <div class="new-book">
-          <dialog id="add-book">
-            <form >
-              <p>
-                
-              </p>
-            </form>
-          </dialog>
-        </div>
-
-        <div class="showcase">
-
-        </div>
+  <div open id="container">
+    <div class="new_book">
+      <dialog id="add_book">
+        <form>
+          <p>
+            <label for="book_title">Book Title:</label>
+            <input autocomplete="off" type="text" id="book_title" name="book_title">
+          </p>
+          <label for="book_author">Book author:</label>
+          <input autocomplete="off" type="text" id="book_author" name="book_author">
+          </p>
+          <p>
+            <label for="book_pages">Number of Pages:</label>
+            <input autocomplete="off" type="number" id="book_pages" name="book_pages">
+          </p>
+          <p>
+            <label for="book_background">Link to Wallpaper Image:</label>
+            <input autocomplete="off" type="text" id="book_background" name="book_background">
+          </p>
+          <p>
+            <label for="book_status">Read:</label>
+            <input type="checkbox" name="book_status" id="book_status">
+          </p>
+          <p class="submit_button">
+            <button id="submit_book" value="default">Submit Book</button>
+          </p>
+        </form>
+      </dialog>
+      <p>
+        <button class="showDialog">Add a Book</button>
+      </p>
     </div>
+
+    <div class="showcase">
+
+    </div>
+  </div>
 </body>
 
 </html>
